@@ -541,6 +541,8 @@ export function HotelDialog({
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const hasFetched = useRef<string | null>(null);
 
+  
+
   // Sync breakfast data between single and double rooms
   useEffect(() => {
     if (mode === "edit" && formData.sencilla) {
@@ -1492,6 +1494,7 @@ const handleInternacionalChange = (checked: boolean) => {
         doblePayload,
         ...tarifasPreferencialesPayloads,
       ];
+      console.log("Actualizando tarifas:", allTarifasPayloads);
 
       const tarifasPromises = allTarifasPayloads.map((payload) =>
         fetch(

@@ -72,13 +72,13 @@ export function isHotelComplete(hotel: FullHotelData): string {
     'id_hotel_excel', 'id_sepomex', 'latitud', 'longitud', 'calificacion',
     'noktosq', 'noktosqq',
     'convenio', 'descripcion',
-    'desayunoincluido', 'desayunocomentarios', 'desayunoprecioporpersona',
-    'paxextrapersona', 'transportacioncomentarios',
+    'DesayunoIncluido', 'DesayunoComentarios', 'DesayunoPrecioPorPersona',
+    'PaxExtraPersona', 'TransportacionComentarios',
     'urlimagenhotel', 'urlimagenhotelq', 'urlimagenhotelqq',
     'cuenta_de_deposito', 'correo', 'telefono',
     'codigopostal', 'colonia',
     'vigencia_convenio', 'otros_impuestos', 'Comentarios', 'comentario_pago',
-    'otros_impuestos_porcentaje', 'score_operaciones'
+    'otros_impuestos_porcentaje', 'score_operaciones',
   ].map(k => k.toLowerCase());
 
   const keysToExclude = [...baseKeysToExclude];
@@ -93,6 +93,14 @@ export function isHotelComplete(hotel: FullHotelData): string {
     const key = rawKey.toLowerCase();
     return !key.includes('comentario') && !keysToExclude.includes(key);
   });
+  const missing = entriesToCheck.filter(([, value]) => {
+  return typeof value === 'string'
+    ? value.trim() === ''
+    : value === null || value === undefined;
+});
+
+console.log("Faltan campos:", missing.map(([k]) => k));
+
 
   const nonNullCount = entriesToCheck.reduce((count, [, value]) => {
     const hasValue =
