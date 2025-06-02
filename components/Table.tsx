@@ -1,6 +1,6 @@
 import { exportToCSV } from "@/helpers/utils";
 import { ArrowDown, FileDown } from "lucide-react";
-import { useState, useEffect, useMemo, use } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 type Registro = {
   [key: string]: any;
@@ -18,6 +18,8 @@ interface TableProps {
     sort: boolean;
   };
   exportButton?: boolean;
+  leyenda?: string;
+  children?: React.ReactNode;
 }
 
 export const Table = ({
@@ -25,6 +27,8 @@ export const Table = ({
   renderers = {},
   defaultSort,
   exportButton = true,
+  leyenda = "",
+  children,
 }: TableProps) => {
   const [displayData, setDisplayData] = useState<Registro[]>(registros);
   const [currentSort, setCurrentSort] = useState<{
@@ -34,12 +38,7 @@ export const Table = ({
 
   useEffect(() => {
     setDisplayData(registros);
-    setCurrentSort(defaultSort);
   }, [registros]);
-
-  useEffect(() => {
-    handleSort(defaultSort.key);
-  }, [currentSort]);
 
   const columnKeys = useMemo(() => {
     if (
@@ -54,23 +53,34 @@ export const Table = ({
   }, [registros]);
 
   const handleSort = (key: string) => {
+    let updateSort = { key, sort: !currentSort.sort };
+
     const sortedData = displayData.toSorted((a, b) =>
       (currentSort.sort ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1
     );
     setDisplayData(sortedData);
+    setCurrentSort(updateSort);
   };
 
   return (
     <div className="relative w-full">
       {exportButton && (
-        <div className="flex w-full justify-end mb-2">
-          <button
-            onClick={() => exportToCSV(displayData, "Solicitudes.csv")}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2"
-          >
-            <FileDown className="w-4 h-4 mr-2" />
-            Exportar CSV
-          </button>
+        <div className="flex w-full justify-between mb-2 ">
+          <div className="flex flex-col justify-end">
+            <span className="text-gray-600 text-sm font-normal ml-1">
+              {leyenda}
+            </span>
+          </div>
+          <div className="flex gap-4">
+            {children}
+            <button
+              onClick={() => exportToCSV(displayData, "Solicitudes.csv")}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2"
+            >
+              <FileDown className="w-4 h-4 mr-2" />
+              Exportar CSV
+            </button>
+          </div>
         </div>
       )}
       <div className="overflow-auto border border-gray-200 rounded-sm w-full">
@@ -81,9 +91,7 @@ export const Table = ({
                 <th
                   key={key}
                   scope="col"
-                  onClick={() =>
-                    setCurrentSort({ key, sort: !currentSort.sort })
-                  }
+                  onClick={() => handleSort(key)}
                   className="px-6 min-w-fit whitespace-nowrap py-3 text-left cursor-pointer text-xs font-medium text-gray-600 uppercase tracking-wider"
                 >
                   <span className="flex gap-2">

@@ -42,42 +42,48 @@ export interface TypeFilters {
   statusPagoProveedor?: null | string;
   markup_start?: null | number;
   markup_end?: null | number;
+  telefono?: number | null;
+  estado_credito?: "Activo" | "Inactivo" | null;
+  vendedor?: string | null;
+  notas?: string | null;
+  startCantidad?: number | null;
+  endCantidad?: number | null;
 }
 
 export type Solicitud = {
-  id_servicio: string;
-  estado_reserva: string;
-  created_at: string; // o Date si lo vas a convertir
-  is_credito: boolean | null;
-  id_solicitud: string;
-  id_viajero: string;
-  comments: string;
-  hotel: string;
-  check_in: string; // o Date
-  check_out: string; // o Date
-  room: string;
-  costo_total: string; // puede ser number si lo vas a convertir
-  total: string; // puede ser number si lo vas a convertir
-  status: "pending" | "confirmed" | "cancelled" | string;
-  id_usuario_generador: string;
-  nombre_viajero: string | null;
-  id_booking: string | null;
-  id_hospedaje: string | null; // <--- Propiedad añadida
-  codigo_reservacion_hotel: string | null;
-  id_pago: string | null;
-  metodo_de_pago: string | null;
-  tipo_de_pago: string | null;
-  id_credito: string | null;
-  pendiente_por_cobrar: string | null;
-  monto_a_credito: string | null;
-  id_agente: string;
-  nombre_viajero_completo: string;
-  nombre_agente_completo: string;
-  correo: string;
-  telefono: string | null; // <--- Tipo corregido para permitir null
-  razon_social: string;
-  rfc: string | null;
-  tipo_persona: string;
+  id_servicio?: string;
+  estado_reserva?: string;
+  created_at?: string; // o Date si lo vas a convertir
+  is_credito?: boolean | null;
+  id_solicitud?: string;
+  id_viajero?: string;
+  comments?: string;
+  hotel?: string;
+  check_in?: string; // o Date
+  check_out?: string; // o Date
+  room?: string;
+  costo_total?: string; // puede ser number si lo vas a convertir
+  total?: string; // puede ser number si lo vas a convertir
+  status?: "pending" | "confirmed" | "cancelled" | string;
+  id_usuario_generador?: string;
+  nombre_viajero?: string | null;
+  id_booking?: string | null;
+  id_hospedaje?: string | null; // <--- Propiedad añadida
+  codigo_reservacion_hotel?: string | null;
+  id_pago?: string | null;
+  metodo_de_pago?: string | null;
+  tipo_de_pago?: string | null;
+  id_credito?: string | null;
+  pendiente_por_cobrar?: string | null;
+  monto_a_credito?: string | null;
+  id_agente?: string;
+  nombre_viajero_completo?: string;
+  nombre_agente_completo?: string;
+  correo?: string;
+  telefono?: string | null; // <--- Tipo corregido para permitir null
+  razon_social?: string;
+  rfc?: string | null;
+  tipo_persona?: string;
 };
 export interface Tax {
   id_impuesto: number;
@@ -320,4 +326,49 @@ export interface EdicionForm {
     };
   };
   solicitud?: Solicitud;
+}
+
+/**
+ * Interfaz para los datos de actualización de una empresa.
+ * Todas las propiedades son opcionales y pueden ser nulas.
+ */
+interface EmpresaUpdateData {
+  tiene_credito?: number | null; // tinyint en la BD, usualmente 0 o 1
+  monto_credito?: number | null; // decimal en la BD
+}
+
+/**
+ * Interfaz para los datos de actualización de un viajero.
+ * Todas las propiedades son opcionales y pueden ser nulas.
+ */
+interface ViajeroUpdateData {
+  numero_pasaporte?: string | null;
+  nacionalidad?: string | null;
+  telefono?: string | null;
+  fecha_nacimiento?: string | null; // Se espera una cadena en formato de fecha, ej: "YYYY-MM-DD" o "YYYY-MM-DDTHH:mm:ss"
+  numero_empleado?: string | null;
+}
+
+/**
+ * Interfaz para los datos de actualización de un agente.
+ * Todas las propiedades son opcionales y pueden ser nulas.
+ */
+interface AgenteUpdateData {
+  tiene_credito_consolidado?: number | null; // tinyint en la BD, usualmente 0 o 1
+  monto_credito?: string | number | null; // decimal en la BD. Se permite string por tu ejemplo original ("54677").
+  // Considera unificar a 'number | null' si siempre se espera un número.
+  vendedor?: string | null;
+  notas?: string | null;
+}
+
+/**
+ * Interfaz para el cuerpo de la solicitud (request body) del endpoint de actualización.
+ * Las claves principales ("empresas", "viajero", "agente") son opcionales.
+ * Dentro de cada una, se espera un objeto donde las claves son los IDs (strings)
+ * y los valores son los objetos de datos de actualización correspondientes.
+ */
+export interface UpdateRequestBody {
+  empresas?: Record<string, EmpresaUpdateData>;
+  viajero?: Record<string, ViajeroUpdateData>;
+  agente?: Record<string, AgenteUpdateData>;
 }
