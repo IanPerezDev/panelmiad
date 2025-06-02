@@ -1,5 +1,5 @@
 import { FullHotelData } from "@/app/dashboard/hoteles/_components/hotel-table";
-import { API_KEY } from "./constant";
+import { API_KEY } from "../constant";
 import { TypeFilters } from "@/types";
 
 // Fetch all hotels
