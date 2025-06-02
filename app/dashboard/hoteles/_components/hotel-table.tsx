@@ -107,7 +107,7 @@ export function isHotelComplete(hotel: FullHotelData): string {
 
 
 export function HotelTable({ data, onRowClick, onSort, sortField, sortDirection }: HotelTableProps) {
-const formatDate = (rawDate: string): string => {
+  const formatDate = (rawDate: string): string => {
   if (!rawDate) return "";
   const dateOnly = rawDate.split('T')[0]; // "2025-12-31"
   const [year, month, day] = dateOnly.split('-');
